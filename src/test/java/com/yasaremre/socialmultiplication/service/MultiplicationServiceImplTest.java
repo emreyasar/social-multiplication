@@ -3,6 +3,7 @@ package com.yasaremre.socialmultiplication.service;
 import com.yasaremre.socialmultiplication.domain.Multiplication;
 import com.yasaremre.socialmultiplication.domain.MultiplicationResultAttempt;
 import com.yasaremre.socialmultiplication.domain.User;
+import com.yasaremre.socialmultiplication.event.EventDispatcher;
 import com.yasaremre.socialmultiplication.repository.MultiplicationResultAttemptRepository;
 import com.yasaremre.socialmultiplication.repository.UserRepository;
 import org.assertj.core.util.Lists;
@@ -31,11 +32,14 @@ public class MultiplicationServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private EventDispatcher eventDispatcher;
+
     @Before
     public void setUp() {
         // With this call to initMocks we tell Mockito to process the annotations
         MockitoAnnotations.initMocks(this);
-        multiplicationServiceImpl = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository);
+        multiplicationServiceImpl = new MultiplicationServiceImpl(randomGeneratorService, attemptRepository, userRepository, eventDispatcher);
     }
 
     @Test

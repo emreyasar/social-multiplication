@@ -3,6 +3,8 @@ package com.yasaremre.socialmultiplication.service;
 import com.yasaremre.socialmultiplication.domain.Multiplication;
 import com.yasaremre.socialmultiplication.domain.MultiplicationResultAttempt;
 import com.yasaremre.socialmultiplication.domain.User;
+import com.yasaremre.socialmultiplication.event.EventDispatcher;
+import com.yasaremre.socialmultiplication.event.MultiplicationSolvedEvent;
 import com.yasaremre.socialmultiplication.repository.MultiplicationResultAttemptRepository;
 import com.yasaremre.socialmultiplication.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +21,17 @@ class MultiplicationServiceImpl implements MultiplicationService {
     private RandomGeneratorService randomGeneratorService;
     private MultiplicationResultAttemptRepository attemptRepository;
     private UserRepository userRepository;
+    private EventDispatcher eventDispatcher;
 
     @Autowired
     public MultiplicationServiceImpl(final RandomGeneratorService randomGeneratorService,
                                      final MultiplicationResultAttemptRepository attemptRepository,
-                                     final UserRepository userRepository) {
+                                     final UserRepository userRepository,
+                                     final EventDispatcher eventDispatcher) {
         this.randomGeneratorService = randomGeneratorService;
         this.attemptRepository = attemptRepository;
         this.userRepository = userRepository;
+        this.eventDispatcher = eventDispatcher;
     }
 
     @Override
@@ -59,6 +64,13 @@ class MultiplicationServiceImpl implements MultiplicationService {
 
         // Stores the attempt
         attemptRepository.save(checkedAttempt);
+
+        // Communicates the result via Event
+        eventDispatcher.send(
+                new MultiplicationSolvedEvent(checkedAttempt.getId(),
+                        checkedAttempt.getUser().getId(),
+                        checkedAttempt.isCorrect())
+        );
 
         return isCorrect;
     }
