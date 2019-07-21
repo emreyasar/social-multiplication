@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.*;
+
 /**
  * Identifies the attempt from a {@link User} to solve a
  * {@link Multiplication}.
@@ -13,17 +15,30 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
+@Entity
 public final class MultiplicationResultAttempt {
 
-    private final User user;
-    private final Multiplication multiplication;
-    private final int resultAttempt;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    // Empty constructor for JSON (de)serialization
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "USER_ID")
+    private final User user;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "MULTIPLICATION_ID")
+    private final Multiplication multiplication;
+
+    private final int resultAttempt;
+    private final boolean correct;
+
+    // Empty constructor for JSON (de)serialization and JPA
     MultiplicationResultAttempt() {
         user = null;
         multiplication = null;
         resultAttempt = -1;
+        correct = false;
     }
 
 }

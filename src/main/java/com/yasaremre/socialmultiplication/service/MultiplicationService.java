@@ -3,6 +3,8 @@ package com.yasaremre.socialmultiplication.service;
 import com.yasaremre.socialmultiplication.domain.Multiplication;
 import com.yasaremre.socialmultiplication.domain.MultiplicationResultAttempt;
 
+import java.util.List;
+
 public interface MultiplicationService {
     /**
      * Creates a Multiplication object with two randomly- generated factors
@@ -16,4 +18,6 @@ public interface MultiplicationService {
      *         multiplication, false otherwise.
      */
     boolean checkAttempt(final MultiplicationResultAttempt resultAttempt);
+
+    List<MultiplicationResultAttempt> getStatsForUser(String userAlias);
 }
